@@ -1,40 +1,52 @@
 package com.universidad.backend.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
-@Table(name = "usuarios")
-@Data
+@Table(name = "usuario")
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "nombre", nullable = false, length = 100)
     private String nombre;
 
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(name = "email", nullable = false, unique = true, length = 100)
     private String email;
 
-    @Column(nullable = false)
-    private String contraseña;
+    // campo llamado 'contrasena' en la BD
+    @Column(name = "contrasena", nullable = false)
+    private String contrasena;
 
+    // FK a rol
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_rol", nullable = false)
     private Rol rol;
 
-    @Column(nullable = false)
-    private Boolean activo = true;
+    // FK opcional a empleado
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_empleado")
+    private Empleado empleado;
+
+    // FK opcional a cliente
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_cliente")
+    private Cliente cliente;
+
+    @Column(name = "created_at", insertable = false, updatable = false)
+    private java.time.LocalDateTime createdAt;
+
+    @Column(name = "updated_at", insertable = false, updatable = false)
+    private java.time.LocalDateTime updatedAt;
+
+    @Column(name = "activo", insertable = false)
+    private Boolean activo;
+
 }
